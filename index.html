@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Learning Missions - ม.1</title>
+    <link href="https://fonts.googleapis.com/css2?family=Itim&family=Mitr:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root { --pink: #FF85A1; --pink-soft: #FFE5EC; --blue: #BDE0FE; --yellow: #FFD93D; --text: #4A4A4A; }
+        * { box-sizing: border-box; }
+        body { margin: 0; padding: 0; background-color: #fff; font-family: 'Itim', cursive; overflow: hidden; }
+
+        /* พื้นหลังลายตารางสมุด */
+        .grid-paper { width: 100vw; height: 100vh; background-image: linear-gradient(#e5e5e5 1px, transparent 1px), linear-gradient(90deg, #e5e5e5 1px, transparent 1px); background-size: 35px 35px; position: relative; }
+        
+        .slide { display: none; width: 100%; height: 100%; flex-direction: column; align-items: center; justify-content: center; padding: 20px; text-align: center; position: absolute; top: 0; left: 0; }
+        .slide.active { display: flex; animation: fadeIn 0.3s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        /* หน้าแรก */
+        .math-decor span { position: absolute; font-size: 8vw; color: var(--pink); opacity: 0.25; pointer-events: none; }
+        .s1 { top: 10%; left: 10%; } .s2 { top: 15%; right: 15%; } .s3 { bottom: 20%; left: 15%; } .s4 { bottom: 15%; right: 20%; }
+        .logo-text { font-size: min(12vw, 85px); color: var(--pink); margin: 0 0 20px 0; text-shadow: 2px 2px 0 #fff, 4px 4px 0 var(--pink-soft); }
+        .btn-main { background: var(--pink); color: white; border: none; padding: 15px 60px; font-size: 28px; border-radius: 60px; cursor: pointer; box-shadow: 0 8px 0 #D6336C; transition: 0.1s; }
+        .btn-main:active { transform: translateY(4px); box-shadow: 0 4px 0 #D6336C; }
+
+        /* หน้าสุ่ม */
+        .huge-cat { font-size: min(8vw, 65px); color: var(--pink); font-weight: bold; margin: 20px 0; min-height: 1.2em; }
+        .btn-spin { background: var(--yellow); padding: 20px 60px; font-size: 28px; border-radius: 60px; border: none; cursor: pointer; box-shadow: 0 8px 0 #D4AF37; transition: 0.1s; }
+        .btn-spin:active { transform: translateY(4px); box-shadow: 0 4px 0 #D4AF37; }
+
+        /* หน้าระเบิดจับเวลา */
+        .bomb-circle { width: min(70vw, 360px); height: min(70vw, 360px); background: var(--blue); border-radius: 50%; display: flex; justify-content: center; align-items: center; border: 12px solid white; position: relative; box-shadow: 0 10px 30px rgba(0,0,0,0.15); }
+        .bomb-wick { position: absolute; top: -35px; right: 20%; width: 45px; height: 45px; background: #FFD93D; clip-path: polygon(50% 0%, 0% 100%, 100% 100%); animation: flash 0.5s infinite alternate; }
+        @keyframes flash { from { opacity: 0.6; } to { opacity: 1; } }
+        .timer-giant { font-size: min(16vw, 85px); color: white; font-weight: bold; font-family: 'Mitr'; }
+
+        /* โจทย์ */
+        .q-paper { background: #FFF0F3; width: 95%; max-width: 800px; padding: 35px 20px; border-radius: 35px; border: 5px dashed var(--pink); font-size: min(8vw, 45px); margin-bottom: 25px; word-wrap: break-word; line-height: 1.4; }
+        .ans-style { border-color: #2ecc71; color: #2ecc71; background: #F0FFF4; font-size: min(7vw, 40px); }
+
+        /* หมดเวลา */
+        .boom-overlay { position: absolute; top:0; left:0; width:100%; height:100%; background: rgba(255, 255, 255, 0.98); display: none; flex-direction: column; justify-content: center; align-items: center; z-index: 100; }
+        .boom-text { font-size: min(12vw, 80px); color: #E63946; font-weight: bold; animation: shake 0.4s infinite; }
+        @keyframes shake { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+
+        /* ปุ่มนำทาง */
+        .nav-bar { position: absolute; bottom: 30px; width: 100%; display: flex; justify-content: space-between; padding: 0 40px; pointer-events: none; }
+        .btn-nav { background: var(--blue); border: none; padding: 12px 30px; border-radius: 50px; font-size: 20px; cursor: pointer; font-family: 'Mitr'; pointer-events: auto; box-shadow: 0 4px 0 #9ec8f0; transition: 0.1s; }
+        .btn-nav:active { transform: translateY(2px); box-shadow: 0 2px 0 #9ec8f0; }
+        .btn-pink { background: var(--pink); color: white; box-shadow: 0 4px 0 #D6336C; }
+        .btn-pink:active { box-shadow: 0 2px 0 #D6336C; }
+        .corner-tag { position: absolute; bottom: 35px; right: 40px; border: 3px solid var(--pink); padding: 8px 25px; border-radius: 20px; color: var(--pink); font-weight: bold; font-size: 18px; background: white; }
+        
+        .setting-box { display: flex; align-items: center; justify-content: center; gap: 15px; font-size: 22px; flex-wrap: wrap; margin-bottom: 20px; }
+        input { width: 100px; padding: 10px; border-radius: 20px; border: 3px solid #ddd; font-size: 26px; text-align: center; font-family: 'Itim'; }
+
+        @media (max-width: 650px) {
+            .nav-bar { padding: 0 15px; bottom: 20px; }
+            .btn-nav { padding: 10px 20px; font-size: 16px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="grid-paper">
+    <div class="slide active" id="s1">
+        <div class="math-decor"><span class="s1">π</span> <span class="s2">√x</span> <span class="s3">∫</span> <span class="s4">Σ</span></div>
+        <h1 class="logo-text">Learning Missions</h1>
+        <button class="btn-main" onclick="go(3)">เริ่มภารกิจ</button>
+        <div class="corner-tag">มาเล่นกัน</div>
+    </div>
+
+    <div class="slide" id="s3">
+        <h1 style="color:var(--pink); font-size:32px; margin-top:0;">สุ่มภารกิจ</h1>
+        <div id="dice-view" style="font-size:110px; color:var(--pink); margin-bottom:10px;"><i class="fa-solid fa-dice-three fa-spin"></i></div>
+        <div id="cat-result" class="huge-cat"></div>
+        <button class="btn-spin" id="spin-btn" onclick="runSpin()">กดเพื่อสุ่มหมวดหมู่!</button>
+        <div class="nav-bar">
+            <button class="btn-nav" onclick="go(1)">ย้อนกลับ</button>
+            <button class="btn-nav btn-pink" id="next-btn" style="display:none;" onclick="loadQ()">ไปรับโจทย์ภารกิจ <i class="fa-solid fa-chevron-right"></i></button>
+        </div>
+    </div>
+
+    <div class="slide" id="s4">
+        <h1 id="q-header" style="color:var(--pink); font-size:32px; margin-top:0;">ภารกิจ: </h1>
+        <div class="q-paper" id="q-text">กำลังโหลดโจทย์...</div>
+        
+        <div class="setting-box">
+            <span>เวลา (นาที): </span>
+            <input type="number" id="time-in" value="1" min="0.1" step="0.1">
+            <button class="btn-nav btn-pink" onclick="startTimer()">เริ่มจับเวลา!</button>
+        </div>
+        <div class="nav-bar">
+            <button class="btn-nav" onclick="go(3)">ย้อนกลับ</button>
+        </div>
+    </div>
+
+    <div class="slide" id="s5">
+        <div class="bomb-circle">
+            <div class="bomb-wick"></div>
+            <div id="timer-num" class="timer-giant">00:00</div>
+        </div>
+        <div id="boom-box" class="boom-overlay">
+            <h1 class="boom-text">หมดเวลา! 💥</h1>
+            <button class="btn-main" style="font-size:32px; padding:20px 60px;" onclick="stopAndGo(6)">ไปดูเฉลย</button>
+        </div>
+        <div class="nav-bar"><button class="btn-nav" onclick="cancelT()">ยกเลิก</button></div>
+    </div>
+
+    <div class="slide" id="s6">
+        <h1 style="color:var(--pink); font-size:36px; margin-top:0;">ภารกิจสำเร็จ!</h1>
+        <div class="q-paper ans-style" id="ans-text">...</div>
+        <div style="display:flex; gap:20px;">
+            <button class="btn-nav btn-pink" id="replay-btn" style="padding:15px 40px;" onclick="resetAll()">เล่นใหม่อีกครั้ง</button>
+            <button class="btn-nav" style="padding:15px 40px;" onclick="go(1)">จบเกม</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    let timer, currentCat = "";
+    let historyPool = {
+        "จำนวนเต็ม": [],
+        "เลขยกกำลัง": [],
+        "สถิติเบื้องต้น": [],
+        "พิมพ์สัมผัส": []
+    };
+
+    // อาร์เรย์หมวดหมู่หลักที่จะค่อยๆ โดนตัดออกถ้าข้อสอบหมด
+    let cats = ["จำนวนเต็ม", "เลขยกกำลัง", "สถิติเบื้องต้น", "พิมพ์สัมผัส"];
+    
+    const pool = {
+        "จำนวนเต็ม": [
+            {id:1, q:"16 + 36 = ?", a:"52"}, {id:2, q:"(-26) + (-35) = ?", a:"-61"},
+            {id:3, q:"(-25) + 30 = ?", a:"5"}, {id:4, q:"(-3) - (-2) = ?", a:"-1"},
+            {id:5, q:"(-17) - 13 = ?", a:"-30"}, {id:6, q:"8 - 2 = ?", a:"6"},
+            {id:7, q:"5 x 10 = ?", a:"50"}, {id:8, q:"2 x (-2) = ?", a:"-4"},
+            {id:9, q:"(-3) x (-8) = ?", a:"24"}, {id:10, q:"15 ÷ 5 = ?", a:"3"},
+            {id:11, q:"(-42) ÷ 7 = ?", a:"-6"}, {id:12, q:"(-20) ÷ (-2) = ?", a:"10"}
+        ],
+        "เลขยกกำลัง": [
+            {id:13, q:"999⁰ = ?", a:"1"},
+            {id:14, q:"ข้อใดเท่ากับ 25 \n ก) 5²  ข) -5²  ค) -(5²)  ง) (-5²)", a:"ก) 5²"},
+            {id:15, q:"2² x 2¹ = ?", a:"2³ = 8"}, {id:16, q:"2⁴ ÷ 2² = ?", a:"2² = 4"},
+            {id:17, q:"5 x 5 x 5 = 5^?", a:"5³"}, {id:18, q:"(3²)² = ?", a:"3⁴ = 81"},
+            {id:19, q:"(2 x 3)² = ?", a:"2² x 3² = 4 x 9 = 36"}, {id:20, q:"2⁻² = ?", a:"1/(2²) = 1/4"},
+            {id:21, q:"(2/3)² = ?", a:"(2²)/(3²) = 4/9"}, {id:22, q:"2 x 10³ = ?", a:"2,000"}
+        ],
+        "สถิติเบื้องต้น": [
+            {id:23, q:"สูตร SUM ในโปรแกรม Microsoft Excel ใช้สำหรับอะไร \n ก) หาผลรวม  ข) หาค่าเฉลี่ย \n ค) หาค่ามากที่สุด  ง) หาค่าน้อยที่สุด", a:"ก) หาผลรวม"},
+            {id:24, q:"สูตร AVERAGE ในโปรแกรม Microsoft Excel ใช้สำหรับอะไร \n ก) หาผลรวม  ข) หาค่าเฉลี่ย \n ค) หาค่ามากที่สุด  ง) หาค่าน้อยที่สุด", a:"ข) หาค่าเฉลี่ย"},
+            {id:25, q:"สูตร MAX ในโปรแกรม Microsoft Excel ใช้สำหรับอะไร \n ก) หาผลรวม  ข) หาค่าเฉลี่ย \n ค) หาค่ามากที่สุด  ง) หาค่าน้อยที่สุด", a:"ค) หาค่ามากที่สุด"},
+            {id:26, q:"สูตร MIN ในโปรแกรม Microsoft Excel ใช้สำหรับอะไร \n ก) หาผลรวม  ข) หาค่าเฉลี่ย \n ค) หาค่ามากที่สุด  ง) หาค่าน้อยที่สุด", a:"ง) หาค่าน้อยที่สุด"},
+            {id:27, q:"ถ้าต้องการหาผลรวมของรายรับทั้งหมด ควรใช้สูตรใด \n ก) SUM  ข) AVERAGE  ค) MAX  ง) MIN", a:"ก) SUM"},
+            {id:28, q:"ถ้าต้องการหาค่าเฉลี่ยของคะแนนสอบ ควรใช้สูตรใด \n ก) SUM  ข) AVERAGE  ค) MAX  ง) MIN", a:"ข) AVERAGE"},
+            {id:29, q:"ถ้าต้องการหาคะแนนที่สูงที่สุด ควรใช้สูตรใด \n ก) SUM  ข) AVERAGE  ค) MAX  ง) MIN", a:"ค) MAX"},
+            {id:30, q:"ถ้าต้องการหาคะแนนที่น้อยที่สุด ควรใช้สูตรใด \n ก) SUM  ข) AVERAGE  ค) MAX  ง) MIN", a:"ง) MIN"}
+        ],
+        "พิมพ์สัมผัส": [
+            {id:31, q:"ตัวอักษร J บนคีย์บอร์ด ต้องใช้นิ้วไหนในการกดพิมพ์?", a:"นิ้วชี้ขวา"},
+            {id:32, q:"ตัวอักษร F บนคีย์บอร์ด ต้องใช้นิ้วไหนในการกดพิมพ์?", a:"นิ้วชี้ซ้าย"},
+            {id:33, q:"ปุ่ม F และ J บนคีย์บอร์ด มีลักษณะพิเศษอะไรที่แตกต่างจากปุ่มอื่น?", a:"มีขีดนูนหรือปุ่มนูนเล็กๆ"},
+            {id:34, q:"เมื่อเริ่มต้นพิมพ์สัมผัส นิ้วก้อยซ้ายต้องวางประจำอยู่ที่ตัวอักษรใด? \n ก) A  ข) B  ค) D  ง) H", a:"A"},
+            {id:35, q:"ปุ่ม Spacebar (เว้นวรรค) ที่ยาวที่สุดด้านล่าง ควรใช้นิ้วใดกด?", a:"นิ้วหัวแม่มือ (นิ้วโป้ง)"},
+            {id:36, q:"ท่านั่งพิมพ์คอมพิวเตอร์ที่ถูกต้อง แผ่นหลังควรมีลักษณะอย่างไร? \n ก) นั่งเอียงตัวไปข้างใดข้างหนึ่ง \n ข) นั่งก้มหน้าหลังค่อมเข้าหาจอ \n ค) นั่งหลังตรงพิงพนักเก้าอี้สบายๆ \n ง) นั่งเอนตัวไปข้างหลังจนเกือบเกยนอน", a:"ค) นั่งหลังตรงพิงพนักเก้าอี้สบายๆ"}
+        ]
+    };
+
+    const sndTick = new Audio("https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3"); sndTick.loop = true;
+    const sndBoom = new Audio("https://assets.mixkit.co/active_storage/sfx/1110/1110-preview.mp3");
+
+    function go(n) {
+        document.querySelectorAll('.slide').forEach(s => s.classList.remove('active'));
+        document.getElementById('s'+n).classList.add('active');
+        if(n !== 5) { stopAudio(); }
+    }
+
+    function runSpin() {
+        if (cats.length === 0) {
+            document.getElementById('cat-result').innerText = "ภารกิจเสร็จสิ้นครบทุกหมวดหมู่แล้ว!";
+            return;
+        }
+
+        const btnSpin = document.getElementById('spin-btn');
+        btnSpin.disabled = true;
+        currentCat = cats[Math.floor(Math.random() * cats.length)];
+        
+        let count = 0;
+        const interval = setInterval(() => {
+            document.getElementById('cat-result').innerText = cats[count % cats.length];
+            count++;
+        }, 100);
+
+        setTimeout(() => {
+            clearInterval(interval);
+            document.getElementById('cat-result').innerText = "หมวด: " + currentCat;
+            document.getElementById('dice-view').style.display = "none";
+            btnSpin.style.display = "none";
+            btnSpin.disabled = false;
+            document.getElementById('next-btn').style.display = "inline-block";
+        }, 1500);
+    }
+
+    function loadQ() {
+        let poolSub = pool[currentCat].filter(p => !historyPool[currentCat].includes(p.id));
+        
+        // ป้องกันกรณีที่กดรันหน้าโหลดขณะที่คำถามย่อยหมดเกลี้ยง
+        if (poolSub.length === 0) {
+            alert("คำถามในหมวดนี้หมดแล้ว! ระบบจะพาท่านกลับไปสุ่มหมวดใหม่อีกครั้ง");
+            resetAll();
+            return;
+        }
+        
+        const item = poolSub[Math.floor(Math.random() * poolSub.length)];
+        historyPool[currentCat].push(item.id); 
+        
+        let checkRem = pool[currentCat].filter(p => !historyPool[currentCat].includes(p.id));
+        if (checkRem.length === 0) {
+            cats = cats.filter(c => c !== currentCat);
+        }
+
+        document.getElementById('q-header').innerText = "ภารกิจ: " + currentCat;
+        document.getElementById('q-text').innerText = item.q;
+        document.getElementById('ans-text').innerText = "คำตอบคือ: " + item.a;
+
+        if (cats.length === 0) {
+            document.getElementById('replay-btn').innerText = "ทำครบทุกข้อแล้ว! (จบเกม)";
+            document.getElementById('replay-btn').onclick = function() { go(1); };
+        } else {
+            document.getElementById('replay-btn').innerText = "เล่นใหม่อีกครั้ง";
+            document.getElementById('replay-btn').onclick = function() { resetAll(); };
+        }
+
+        go(4);
+    }
+
+    function startTimer() {
+        let inputVal = parseFloat(document.getElementById('time-in').value) || 1;
+        let sec = Math.max(1, Math.round(inputVal * 60));
+        
+        go(5);
+        document.getElementById('boom-box').style.display = 'none';
+        updateTimerUI(sec);
+        
+        try { sndTick.play(); } catch(e) {}
+
+        timer = setInterval(() => {
+            sec--;
+            updateTimerUI(sec);
+            if(sec <= 0) {
+                clearInterval(timer);
+                sndTick.pause();
+                try { sndBoom.play(); } catch(e) {}
+                document.getElementById('boom-box').style.display = 'flex';
+            }
+        }, 1000);
+    }
+
+    function updateTimerUI(sec) {
+        let m = Math.floor(sec/60), s = sec%60;
+        document.getElementById('timer-num').innerText = `${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
+    }
+
+    function cancelT() { clearInterval(timer); go(4); }
+    function stopAudio() { sndTick.pause(); sndBoom.pause(); }
+    function stopAndGo(n) { stopAudio(); go(n); }
+
+    function resetAll() {
+        document.getElementById('dice-view').style.display = "block";
+        document.getElementById('spin-btn').style.display = "inline-block";
+        document.getElementById('next-btn').style.display = "none";
+        document.getElementById('cat-result').innerText = "";
+        go(3);
+    }
+</script>
+</body>
+</html>
